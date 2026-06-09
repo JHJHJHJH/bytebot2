@@ -47,7 +47,7 @@ export class OpenAIService implements BytebotAgentService {
     useTools: boolean = true,
     signal?: AbortSignal,
   ): Promise<BytebotAgentResponse> {
-    const isReasoning = model.startsWith('o');
+    const isReasoning = model.startsWith('o') || model.startsWith('gpt-5');
     try {
       const openaiMessages = this.formatMessagesForOpenAI(messages);
 
