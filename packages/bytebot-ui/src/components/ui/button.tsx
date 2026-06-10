@@ -52,14 +52,8 @@ function Button({
   children,
   ...props
 }: ButtonProps) {
-  const Comp = asChild ? Slot : "button"
-
-  return (
-    <Comp
-      data-slot="button"
-      className={cn(buttonVariants({ variant, size, className }))}
-      {...props}
-    >
+  const buttonContent = (
+    <>
       {icon && iconPosition === "left" && (
         <span className="mr-1 flex items-center">{icon}</span>
       )}
@@ -67,7 +61,48 @@ function Button({
       {icon && iconPosition === "right" && (
         <span className="ml-1 flex items-center">{icon}</span>
       )}
-    </Comp>
+    </>
+  )
+
+  if (asChild) {
+    const child = React.Children.only(children) as React.ReactElement<{
+      children?: React.ReactNode
+    }>
+    const childWithIcon = icon
+      ? React.cloneElement(
+          child,
+          undefined,
+          <>
+            {icon && iconPosition === "left" && (
+              <span className="mr-1 flex items-center">{icon}</span>
+            )}
+            {child.props.children}
+            {icon && iconPosition === "right" && (
+              <span className="ml-1 flex items-center">{icon}</span>
+            )}
+          </>
+        )
+      : child
+
+    return (
+      <Slot
+        data-slot="button"
+        className={cn(buttonVariants({ variant, size, className }))}
+        {...props}
+      >
+        {childWithIcon}
+      </Slot>
+    )
+  }
+
+  return (
+    <button
+      data-slot="button"
+      className={cn(buttonVariants({ variant, size, className }))}
+      {...props}
+    >
+      {buttonContent}
+    </button>
   )
 }
 

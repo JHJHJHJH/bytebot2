@@ -17,6 +17,8 @@ services:
       - "9990:9990" # bytebotd service & noVNC
     environment:
       - DISPLAY=:0
+    volumes:
+      - bytebot_codex_home:/home/user/.codex
     networks:
       - bytebot-network
 
@@ -48,7 +50,10 @@ services:
     environment:
       - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:postgres@postgres:5432/bytebotdb}
       - BYTEBOT_DESKTOP_BASE_URL=${BYTEBOT_DESKTOP_BASE_URL:-http://bytebot-desktop:9990}
+      - BYTEBOT_AGENT_CONFIG_DIR=/data/bytebot-agent
       - BYTEBOT_LLM_PROXY_URL=${BYTEBOT_LLM_PROXY_URL:-http://bytebot-llm-proxy:4000}
+    volumes:
+      - bytebot_agent_config:/data/bytebot-agent
     depends_on:
       - postgres
     networks:
@@ -73,6 +78,7 @@ services:
       dockerfile: bytebot-ui/Dockerfile
       args:
         - BYTEBOT_AGENT_BASE_URL=${BYTEBOT_AGENT_BASE_URL:-http://bytebot-agent:9991}
+        - BYTEBOT_DESKTOP_BASE_URL=${BYTEBOT_DESKTOP_BASE_URL:-http://bytebot-desktop:9990}
         - BYTEBOT_DESKTOP_VNC_URL=${BYTEBOT_DESKTOP_VNC_URL:-http://bytebot-desktop:9990/websockify}
     # Use pre-built image
     image: ghcr.io/bytebot-ai/bytebot-ui:edge
@@ -83,6 +89,7 @@ services:
     environment:
       - NODE_ENV=production
       - BYTEBOT_AGENT_BASE_URL=${BYTEBOT_AGENT_BASE_URL:-http://bytebot-agent:9991}
+      - BYTEBOT_DESKTOP_BASE_URL=${BYTEBOT_DESKTOP_BASE_URL:-http://bytebot-desktop:9990}
       - BYTEBOT_DESKTOP_VNC_URL=${BYTEBOT_DESKTOP_VNC_URL:-http://bytebot-desktop:9990/websockify}
     depends_on:
       - bytebot-agent
@@ -94,4 +101,6 @@ networks:
     driver: bridge
 
 volumes:
+  bytebot_codex_home:
+  bytebot_agent_config:
   postgres_data:

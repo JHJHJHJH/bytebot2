@@ -17,3 +17,8 @@ services:
       - "9990:9990" # bytebotd service & noVNC
     environment:
       - DISPLAY=:0
+    volumes:
+      - bytebot_codex_home:/home/user/.codex
+
+volumes:
+  bytebot_codex_home:

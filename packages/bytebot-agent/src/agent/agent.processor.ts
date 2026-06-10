@@ -39,6 +39,7 @@ import {
 import { SummariesService } from '../summaries/summaries.service';
 import { handleComputerToolUse } from './agent.computer-use';
 import { ProxyService } from '../proxy/proxy.service';
+import { CodexService } from '../codex/codex.service';
 
 @Injectable()
 export class AgentProcessor {
@@ -56,6 +57,7 @@ export class AgentProcessor {
     private readonly openaiService: OpenAIService,
     private readonly googleService: GoogleService,
     private readonly proxyService: ProxyService,
+    private readonly codexService: CodexService,
     private readonly inputCaptureService: InputCaptureService,
   ) {
     this.services = {
@@ -63,6 +65,7 @@ export class AgentProcessor {
       openai: this.openaiService,
       google: this.googleService,
       proxy: this.proxyService,
+      codex: this.codexService,
     };
     this.logger.log('AgentProcessor initialized');
   }

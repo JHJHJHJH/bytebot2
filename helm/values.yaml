@@ -92,6 +92,7 @@ bytebot-ui:
     port: 9992
   config:
     agentBaseUrl: "http://bytebot-agent:9991"
+    desktopBaseUrl: "http://bytebot-desktop:9990"
     desktopVncUrl: "http://bytebot-desktop:9990/websockify"
   resources:
     limits:

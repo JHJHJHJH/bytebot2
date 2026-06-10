@@ -31,10 +31,12 @@ affinity: {}
 env:
   NODE_ENV: "production"
   BYTEBOT_AGENT_BASE_URL: "http://bytebot-agent:9991"
+  BYTEBOT_DESKTOP_BASE_URL: "http://bytebot-desktop:9990"
   BYTEBOT_DESKTOP_VNC_URL: "http://bytebot-desktop:9990/websockify"
 
 config:
   agentBaseUrl: "http://bytebot-agent:9991"
+  desktopBaseUrl: "http://bytebot-desktop:9990"
   desktopVncUrl: "http://bytebot-desktop:9990/websockify"
 
 ingress:

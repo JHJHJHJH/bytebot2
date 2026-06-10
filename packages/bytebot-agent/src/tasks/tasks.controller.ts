@@ -19,24 +19,17 @@ import { ANTHROPIC_MODELS } from '../anthropic/anthropic.constants';
 import { OPENAI_MODELS } from '../openai/openai.constants';
 import { GOOGLE_MODELS } from '../google/google.constants';
 import { BytebotAgentModel } from 'src/agent/agent.types';
-
-const geminiApiKey = process.env.GEMINI_API_KEY;
-const anthropicApiKey = process.env.ANTHROPIC_API_KEY;
-const openaiApiKey = process.env.OPENAI_API_KEY;
-
-const proxyUrl = process.env.BYTEBOT_LLM_PROXY_URL;
-
-const models = [
-  ...(anthropicApiKey ? ANTHROPIC_MODELS : []),
-  ...(openaiApiKey ? OPENAI_MODELS : []),
-  ...(geminiApiKey ? GOOGLE_MODELS : []),
-];
+import { ModelKeysService } from '../model-keys/model-keys.service';
+import { CODEX_MODELS } from '../codex/codex.constants';
+import { CodexService } from '../codex/codex.service';
 
 @Controller('tasks')
 export class TasksController {
   constructor(
     private readonly tasksService: TasksService,
     private readonly messagesService: MessagesService,
+    private readonly modelKeysService: ModelKeysService,
+    private readonly codexService: CodexService,
   ) {}
 
   @Post()
@@ -68,6 +61,8 @@ export class TasksController {
 
   @Get('models')
   async getModels() {
+    const proxyUrl = process.env.BYTEBOT_LLM_PROXY_URL;
+
     if (proxyUrl) {
       try {
         const response = await fetch(`${proxyUrl}/model/info`, {
@@ -107,7 +102,19 @@ export class TasksController {
         );
       }
     }
-    return models;
+
+    const codexModels = (await this.codexService.isConfigured())
+      ? CODEX_MODELS
+      : [];
+
+    return [
+      ...codexModels,
+      ...(this.modelKeysService.isConfigured('anthropic')
+        ? ANTHROPIC_MODELS
+        : []),
+      ...(this.modelKeysService.isConfigured('openai') ? OPENAI_MODELS : []),
+      ...(this.modelKeysService.isConfigured('google') ? GOOGLE_MODELS : []),
+    ];
   }
 
   @Get(':id')

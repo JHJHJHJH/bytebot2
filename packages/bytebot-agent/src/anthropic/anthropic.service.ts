@@ -1,5 +1,4 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import Anthropic, { APIUserAbortError } from '@anthropic-ai/sdk';
 import {
   MessageContentBlock,
@@ -19,24 +18,18 @@ import {
   BytebotAgentInterrupt,
   BytebotAgentResponse,
 } from '../agent/agent.types';
+import { ModelKeysService } from '../model-keys/model-keys.service';
 
 @Injectable()
 export class AnthropicService implements BytebotAgentService {
-  private readonly anthropic: Anthropic;
   private readonly logger = new Logger(AnthropicService.name);
 
-  constructor(private readonly configService: ConfigService) {
-    const apiKey = this.configService.get<string>('ANTHROPIC_API_KEY');
-
-    if (!apiKey) {
+  constructor(private readonly modelKeysService: ModelKeysService) {
+    if (!this.modelKeysService.isConfigured('anthropic')) {
       this.logger.warn(
         'ANTHROPIC_API_KEY is not set. AnthropicService will not work properly.',
       );
     }
-
-    this.anthropic = new Anthropic({
-      apiKey: apiKey || 'dummy-key-for-initialization',
-    });
   }
 
   async generateMessage(
@@ -47,6 +40,7 @@ export class AnthropicService implements BytebotAgentService {
     signal?: AbortSignal,
   ): Promise<BytebotAgentResponse> {
     try {
+      const anthropic = this.createClient();
       const maxTokens = 8192;
 
       // Convert our message content blocks to Anthropic's expected format
@@ -58,7 +52,7 @@ export class AnthropicService implements BytebotAgentService {
       };
 
       // Make the API call
-      const response = await this.anthropic.messages.create(
+      const response = await anthropic.messages.create(
         {
           model,
           max_tokens: maxTokens * 2,
@@ -99,6 +93,15 @@ export class AnthropicService implements BytebotAgentService {
       );
       throw error;
     }
+  }
+
+  private createClient(): Anthropic {
+    const apiKey = this.modelKeysService.getApiKey('anthropic');
+    if (!apiKey) {
+      throw new Error('ANTHROPIC_API_KEY is not configured.');
+    }
+
+    return new Anthropic({ apiKey });
   }
 
   /**

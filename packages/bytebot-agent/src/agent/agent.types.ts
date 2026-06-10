@@ -21,7 +21,7 @@ export interface BytebotAgentService {
 }
 
 export interface BytebotAgentModel {
-  provider: 'anthropic' | 'openai' | 'google' | 'proxy';
+  provider: 'anthropic' | 'openai' | 'google' | 'proxy' | 'codex';
   name: string;
   title: string;
   contextWindow?: number;
