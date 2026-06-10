@@ -25,6 +25,13 @@ export interface ModelKeyStatus {
   maskedValue?: string;
 }
 
+export interface ModelKeyTestResult {
+  ok: boolean;
+  latencyMs: number;
+  status?: number;
+  error?: string;
+}
+
 const PROVIDERS: ModelProviderDefinition[] = [
   {
     id: 'anthropic',
@@ -42,6 +49,31 @@ const PROVIDERS: ModelProviderDefinition[] = [
     envVar: 'GEMINI_API_KEY',
   },
 ];
+
+// Cheap, zero-token requests used to verify that a key is accepted.
+const PROVIDER_TESTS: Record<
+  ModelProviderId,
+  { url: string; headers: (apiKey: string) => Record<string, string> }
+> = {
+  anthropic: {
+    url: 'https://api.anthropic.com/v1/models?limit=1',
+    headers: (apiKey) => ({
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+    }),
+  },
+  openai: {
+    url: 'https://api.openai.com/v1/models',
+    headers: (apiKey) => ({ Authorization: `Bearer ${apiKey}` }),
+  },
+  google: {
+    url: 'https://generativelanguage.googleapis.com/v1beta/models?pageSize=1',
+    headers: (apiKey) => ({ 'x-goog-api-key': apiKey }),
+  },
+};
+
+const TEST_TIMEOUT_MS = 10_000;
+const TEST_ERROR_MAX_LENGTH = 300;
 
 @Injectable()
 export class ModelKeysService {
@@ -100,6 +132,48 @@ export class ModelKeysService {
     return this.getStatus(provider.id);
   }
 
+  async testApiKey(providerId: ModelProviderId): Promise<ModelKeyTestResult> {
+    const provider = this.getProvider(providerId);
+    const apiKey = this.getApiKey(provider.id);
+
+    if (!apiKey) {
+      throw new Error(`${provider.envVar} is not configured`);
+    }
+
+    const test = PROVIDER_TESTS[provider.id];
+    const startedAt = Date.now();
+
+    let response: Response;
+    try {
+      response = await fetch(test.url, {
+        headers: test.headers(apiKey),
+        signal: AbortSignal.timeout(TEST_TIMEOUT_MS),
+      });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      return {
+        ok: false,
+        latencyMs: Date.now() - startedAt,
+        error: this.truncateError(
+          `Could not reach ${new URL(test.url).host}: ${message}`,
+        ),
+      };
+    }
+
+    const latencyMs = Date.now() - startedAt;
+
+    if (response.ok) {
+      return { ok: true, latencyMs, status: response.status };
+    }
+
+    return {
+      ok: false,
+      latencyMs,
+      status: response.status,
+      error: this.truncateError(await this.readProviderError(response)),
+    };
+  }
+
   clearApiKey(providerId: ModelProviderId): ModelKeyStatus {
     const provider = this.getProvider(providerId);
 
@@ -149,6 +223,32 @@ export class ModelKeysService {
       throw new Error(`Unknown model provider: ${providerId}`);
     }
     return provider;
+  }
+
+  private async readProviderError(response: Response): Promise<string> {
+    const fallback = `Request failed with status ${response.status}`;
+
+    try {
+      const body = (await response.json()) as {
+        error?: { message?: string } | string;
+      };
+
+      if (typeof body.error === 'string') {
+        return body.error || fallback;
+      }
+
+      return body.error?.message || fallback;
+    } catch {
+      return fallback;
+    }
+  }
+
+  private truncateError(message: string): string {
+    if (message.length <= TEST_ERROR_MAX_LENGTH) {
+      return message;
+    }
+
+    return `${message.slice(0, TEST_ERROR_MAX_LENGTH)}…`;
   }
 
   private maskSecret(value: string): string {

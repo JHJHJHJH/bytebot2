@@ -50,6 +50,13 @@ export interface CodexExecResponse {
   stderr: string;
 }
 
+export interface CodexTestResult {
+  ok: boolean;
+  latencyMs: number;
+  detail?: string;
+  error?: string;
+}
+
 @Injectable()
 export class CodexService implements OnModuleDestroy {
   private readonly logger = new Logger(CodexService.name);
@@ -84,36 +91,6 @@ export class CodexService implements OnModuleDestroy {
       version,
       activeLogin: this.activeLogin,
     };
-  }
-
-  async loginWithAccessToken(accessToken: string): Promise<CodexStatus> {
-    const trimmedToken = accessToken.trim();
-    if (!trimmedToken) {
-      throw new Error('Codex access token is required');
-    }
-
-    await this.ensureCodexHome();
-    await this.runCodex(['login', '--with-access-token'], {
-      stdin: trimmedToken,
-      timeoutMs: 120000,
-    });
-
-    return this.getStatus();
-  }
-
-  async loginWithApiKey(apiKey: string): Promise<CodexStatus> {
-    const trimmedApiKey = apiKey.trim();
-    if (!trimmedApiKey) {
-      throw new Error('Codex API key is required');
-    }
-
-    await this.ensureCodexHome();
-    await this.runCodex(['login', '--with-api-key'], {
-      stdin: trimmedApiKey,
-      timeoutMs: 120000,
-    });
-
-    return this.getStatus();
   }
 
   async startDeviceLogin(): Promise<CodexLoginSession> {
@@ -173,41 +150,6 @@ export class CodexService implements OnModuleDestroy {
     return session;
   }
 
-  async openTerminalLogin(): Promise<{ success: boolean }> {
-    await this.ensureCodexHome();
-
-    const command = [
-      `mkdir -p ${this.shellQuote(this.codexHome)}`,
-      `export HOME=${this.shellQuote(this.homeDir)}`,
-      `export CODEX_HOME=${this.shellQuote(this.codexHome)}`,
-      `codex -c 'cli_auth_credentials_store="file"' login`,
-      'status=$?',
-      'printf "\\nCodex login exited with status %s.\\n" "$status"',
-      'exec bash',
-    ].join('; ');
-
-    const child = spawn(
-      'xfce4-terminal',
-      [
-        '--title',
-        'Codex Login',
-        '--working-directory',
-        this.homeDir,
-        '--command',
-        `bash -lc ${this.shellQuote(command)}`,
-      ],
-      {
-        env: this.commandEnv(),
-        cwd: this.homeDir,
-        stdio: 'ignore',
-        detached: true,
-      },
-    );
-    child.unref();
-
-    return { success: true };
-  }
-
   async cancelLogin(): Promise<CodexLoginSession | null> {
     if (!this.activeLogin || this.activeLogin.status !== 'running') {
       return this.activeLogin;
@@ -239,6 +181,53 @@ export class CodexService implements OnModuleDestroy {
     await fs.rm(this.authFilePath, { force: true });
 
     return this.getStatus();
+  }
+
+  async testAuth(): Promise<CodexTestResult> {
+    await this.ensureCodexHome();
+
+    const startedAt = Date.now();
+    const version = await this.getCodexVersion();
+
+    if (!version) {
+      return {
+        ok: false,
+        latencyMs: Date.now() - startedAt,
+        error: 'Codex CLI is not installed',
+      };
+    }
+
+    try {
+      const result = await this.runCodex(['login', 'status'], {
+        timeoutMs: 15000,
+      });
+      return {
+        ok: true,
+        latencyMs: Date.now() - startedAt,
+        detail: result.stdout.trim() || result.stderr.trim() || undefined,
+      };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+
+      // Older CLIs without `login status`: fall back to the auth-file check.
+      if (/unrecognized|unexpected|usage/i.test(message)) {
+        const status = await this.getStatus();
+        return {
+          ok: status.authenticated,
+          latencyMs: Date.now() - startedAt,
+          detail: status.authenticated
+            ? 'Auth credentials found'
+            : undefined,
+          error: status.authenticated ? undefined : 'Codex is not signed in',
+        };
+      }
+
+      return {
+        ok: false,
+        latencyMs: Date.now() - startedAt,
+        error: message,
+      };
+    }
   }
 
   async exec(request: CodexExecRequest): Promise<CodexExecResponse> {
@@ -502,9 +491,5 @@ export class CodexService implements OnModuleDestroy {
         process.env.PATH || '',
       ].join(':'),
     };
-  }
-
-  private shellQuote(value: string): string {
-    return `'${value.replace(/'/g, `'\\''`)}'`;
   }
 }

@@ -4,6 +4,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   Param,
   Post,
 } from '@nestjs/common';
@@ -34,6 +35,17 @@ export class ModelKeysController {
 
     try {
       return this.modelKeysService.setApiKey(providerId, apiKey);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      throw new BadRequestException(message);
+    }
+  }
+
+  @Post(':providerId/test')
+  @HttpCode(200)
+  async testModelKey(@Param('providerId') providerId: ModelProviderId) {
+    try {
+      return await this.modelKeysService.testApiKey(providerId);
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       throw new BadRequestException(message);

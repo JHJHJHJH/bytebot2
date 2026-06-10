@@ -3,6 +3,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
   Post,
 } from '@nestjs/common';
 import { CodexExecRequest, CodexService } from './codex.service';
@@ -21,32 +22,9 @@ export class CodexController {
     return this.codexService.getLoginSession();
   }
 
-  @Post('login/access-token')
-  loginWithAccessToken(@Body('accessToken') accessToken?: string) {
-    if (!accessToken) {
-      throw new BadRequestException('accessToken is required');
-    }
-
-    return this.codexService.loginWithAccessToken(accessToken);
-  }
-
-  @Post('login/api-key')
-  loginWithApiKey(@Body('apiKey') apiKey?: string) {
-    if (!apiKey) {
-      throw new BadRequestException('apiKey is required');
-    }
-
-    return this.codexService.loginWithApiKey(apiKey);
-  }
-
   @Post('login/device')
   startDeviceLogin() {
     return this.codexService.startDeviceLogin();
-  }
-
-  @Post('login/terminal')
-  openTerminalLogin() {
-    return this.codexService.openTerminalLogin();
   }
 
   @Post('login/cancel')
@@ -57,6 +35,12 @@ export class CodexController {
   @Post('logout')
   logout() {
     return this.codexService.logout();
+  }
+
+  @Post('test')
+  @HttpCode(200)
+  test() {
+    return this.codexService.testAuth();
   }
 
   @Post('exec')
