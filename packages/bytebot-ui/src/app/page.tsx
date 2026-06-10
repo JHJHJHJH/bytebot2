@@ -41,6 +41,10 @@ interface FileWithBase64 {
   size: number;
 }
 
+function getModelValue(model: Model): string {
+  return `${model.provider}:${model.name}`;
+}
+
 export default function Home() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -53,6 +57,9 @@ export default function Home() {
   );
   const popoverRef = useRef<HTMLDivElement>(null);
   const buttonsRef = useRef<HTMLDivElement>(null);
+  const selectedModelValue = selectedModel
+    ? getModelValue(selectedModel)
+    : undefined;
 
   useEffect(() => {
     fetch("/api/tasks/models")
@@ -163,10 +170,10 @@ export default function Home() {
                 />
                 <div className="mt-2">
                   <Select
-                    value={selectedModel?.name}
+                    value={selectedModelValue}
                     onValueChange={(val) =>
                       setSelectedModel(
-                        models.find((m) => m.name === val) || null,
+                        models.find((m) => getModelValue(m) === val) || null,
                       )
                     }
                   >
@@ -175,7 +182,10 @@ export default function Home() {
                     </SelectTrigger>
                     <SelectContent>
                       {models.map((m) => (
-                        <SelectItem key={m.name} value={m.name}>
+                        <SelectItem
+                          key={getModelValue(m)}
+                          value={getModelValue(m)}
+                        >
                           {m.title}
                         </SelectItem>
                       ))}
@@ -221,10 +231,10 @@ export default function Home() {
                 />
                 <div className="mt-2">
                   <Select
-                    value={selectedModel?.name}
+                    value={selectedModelValue}
                     onValueChange={(val) =>
                       setSelectedModel(
-                        models.find((m) => m.name === val) || null,
+                        models.find((m) => getModelValue(m) === val) || null,
                       )
                     }
                   >
@@ -233,7 +243,10 @@ export default function Home() {
                     </SelectTrigger>
                     <SelectContent>
                       {models.map((m) => (
-                        <SelectItem key={m.name} value={m.name}>
+                        <SelectItem
+                          key={getModelValue(m)}
+                          value={getModelValue(m)}
+                        >
                           {m.title}
                         </SelectItem>
                       ))}

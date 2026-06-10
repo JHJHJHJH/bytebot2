@@ -1,5 +1,4 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import OpenAI, { APIUserAbortError } from 'openai';
 import {
   MessageContentBlock,
@@ -20,24 +19,18 @@ import {
   BytebotAgentInterrupt,
   BytebotAgentResponse,
 } from '../agent/agent.types';
+import { ModelKeysService } from '../model-keys/model-keys.service';
 
 @Injectable()
 export class OpenAIService implements BytebotAgentService {
-  private readonly openai: OpenAI;
   private readonly logger = new Logger(OpenAIService.name);
 
-  constructor(private readonly configService: ConfigService) {
-    const apiKey = this.configService.get<string>('OPENAI_API_KEY');
-
-    if (!apiKey) {
+  constructor(private readonly modelKeysService: ModelKeysService) {
+    if (!this.modelKeysService.isConfigured('openai')) {
       this.logger.warn(
         'OPENAI_API_KEY is not set. OpenAIService will not work properly.',
       );
     }
-
-    this.openai = new OpenAI({
-      apiKey: apiKey || 'dummy-key-for-initialization',
-    });
   }
 
   async generateMessage(
@@ -49,10 +42,11 @@ export class OpenAIService implements BytebotAgentService {
   ): Promise<BytebotAgentResponse> {
     const isReasoning = model.startsWith('o') || model.startsWith('gpt-5');
     try {
+      const openai = this.createClient();
       const openaiMessages = this.formatMessagesForOpenAI(messages);
 
       const maxTokens = 8192;
-      const response = await this.openai.responses.create(
+      const response = await openai.responses.create(
         {
           model,
           max_output_tokens: maxTokens,
@@ -88,6 +82,15 @@ export class OpenAIService implements BytebotAgentService {
       );
       throw error;
     }
+  }
+
+  private createClient(): OpenAI {
+    const apiKey = this.modelKeysService.getApiKey('openai');
+    if (!apiKey) {
+      throw new Error('OPENAI_API_KEY is not configured.');
+    }
+
+    return new OpenAI({ apiKey });
   }
 
   private formatMessagesForOpenAI(

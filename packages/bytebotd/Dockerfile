@@ -141,6 +141,9 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# Install Codex CLI for local Codex login and workflows.
+RUN npm install -g @openai/codex
+
 # Upgrade pip
 RUN pip3 install --upgrade pip
 
@@ -235,8 +238,8 @@ RUN mkdir -p /home/user/Desktop && \
     chmod +x /home/user/Desktop/*.desktop && \
     chown user:user /home/user/Desktop/*.desktop
 
-RUN mkdir -p /home/user/.config /home/user/.local/share /home/user/.cache \
-    && chown -R user:user /home/user/.config /home/user/.local /home/user/.cache
+RUN mkdir -p /home/user/.codex /home/user/.config /home/user/.local/share /home/user/.cache \
+    && chown -R user:user /home/user/.codex /home/user/.config /home/user/.local /home/user/.cache
 
 WORKDIR /home/user
 

@@ -11,6 +11,7 @@ import { GoogleModule } from '../google/google.module';
 import { SummariesModule } from 'src/summaries/summaries.modue';
 import { AgentAnalyticsService } from './agent.analytics';
 import { ProxyModule } from 'src/proxy/proxy.module';
+import { CodexModule } from '../codex/codex.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ProxyModule } from 'src/proxy/proxy.module';
     OpenAIModule,
     GoogleModule,
     ProxyModule,
+    CodexModule,
   ],
   providers: [
     AgentProcessor,

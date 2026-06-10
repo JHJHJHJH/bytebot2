@@ -1,5 +1,4 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import {
   isComputerToolUseContentBlock,
   isImageContentBlock,
@@ -25,24 +24,18 @@ import {
 } from '@google/genai';
 import { v4 as uuid } from 'uuid';
 import { DEFAULT_MODEL } from './google.constants';
+import { ModelKeysService } from '../model-keys/model-keys.service';
 
 @Injectable()
 export class GoogleService implements BytebotAgentService {
-  private readonly google: GoogleGenAI;
   private readonly logger = new Logger(GoogleService.name);
 
-  constructor(private readonly configService: ConfigService) {
-    const apiKey = this.configService.get<string>('GEMINI_API_KEY');
-
-    if (!apiKey) {
+  constructor(private readonly modelKeysService: ModelKeysService) {
+    if (!this.modelKeysService.isConfigured('google')) {
       this.logger.warn(
         'GEMINI_API_KEY is not set. GoogleService will not work properly.',
       );
     }
-
-    this.google = new GoogleGenAI({
-      apiKey: apiKey || 'dummy-key-for-initialization',
-    });
   }
 
   async generateMessage(
@@ -53,13 +46,14 @@ export class GoogleService implements BytebotAgentService {
     signal?: AbortSignal,
   ): Promise<BytebotAgentResponse> {
     try {
+      const google = this.createClient();
       const maxTokens = 8192;
 
       // Convert our message content blocks to Anthropic's expected format
       const googleMessages = this.formatMessagesForGoogle(messages);
 
       const response: GenerateContentResponse =
-        await this.google.models.generateContent({
+        await google.models.generateContent({
           model,
           contents: googleMessages,
           config: {
@@ -113,6 +107,15 @@ export class GoogleService implements BytebotAgentService {
       );
       throw error;
     }
+  }
+
+  private createClient(): GoogleGenAI {
+    const apiKey = this.modelKeysService.getApiKey('google');
+    if (!apiKey) {
+      throw new Error('GEMINI_API_KEY is not configured.');
+    }
+
+    return new GoogleGenAI({ apiKey });
   }
 
   /**
