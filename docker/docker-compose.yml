@@ -85,6 +85,20 @@ services:
     networks:
       - bytebot-network
 
+  bytebot-docs:
+    build:
+      context: ../docs
+      dockerfile: Dockerfile
+    image: bytebot-docs:edge
+    container_name: bytebot-docs
+    restart: unless-stopped
+    ports:
+      - "9993:9993"
+    environment:
+      - NODE_ENV=production
+    networks:
+      - bytebot-network
+
 networks:
   bytebot-network:
     driver: bridge

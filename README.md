@@ -14,7 +14,7 @@
 [![License](https://img.shields.io/badge/license-Apache%202.0-green.svg)](LICENSE)
 [![Discord](https://img.shields.io/discord/1232768900274585720?color=7289da&label=discord)](https://discord.com/invite/d9ewZkWPTP)
 
-[🌐 Website](https://bytebot.ai) • [📚 Documentation](https://docs.bytebot.ai) • [💬 Discord](https://discord.com/invite/d9ewZkWPTP) • [𝕏 Twitter](https://x.com/bytebot_ai)
+[🌐 Website](https://bytebot.ai) • [📚 Documentation](http://localhost:9993) (self-hosted with the stack) • [💬 Discord](https://discord.com/invite/d9ewZkWPTP) • [𝕏 Twitter](https://x.com/bytebot_ai)
 
 <!-- Keep these links. Translations will automatically update with the README. -->
 [Deutsch](https://zdoc.app/de/bytebot-ai/bytebot) | 
@@ -100,10 +100,10 @@ echo "ANTHROPIC_API_KEY=sk-ant-..." > docker/.env
 
 docker-compose -f docker/docker-compose.yml up -d
 
-# Open http://localhost:9992
+# Open http://localhost:9992 (docs at http://localhost:9993)
 ```
 
-[Full deployment guide →](https://docs.bytebot.ai/quickstart)
+[Full deployment guide →](http://localhost:9993/quickstart)
 
 ## How It Works
 
@@ -183,7 +183,7 @@ curl -X POST http://localhost:9990/computer-use \
   -d '{"action": "click_mouse", "coordinate": [500, 300]}'
 ```
 
-[Full API documentation →](https://docs.bytebot.ai/api-reference/introduction)
+[Full API documentation →](http://localhost:9993/api-reference/introduction)
 
 ## Setting Up Your Desktop Agent
 
@@ -248,7 +248,7 @@ Bytebot is built with:
 
 ### Multiple AI Providers
 
-Use any AI provider through our [LiteLLM integration](https://docs.bytebot.ai/deployment/litellm):
+Use any AI provider through our [LiteLLM integration](http://localhost:9993/deployment/litellm):
 
 - Azure OpenAI
 - AWS Bedrock
@@ -269,12 +269,12 @@ helm install bytebot ./helm \
   --set agent.env.ANTHROPIC_API_KEY=sk-ant-...
 ```
 
-[Enterprise deployment guide →](https://docs.bytebot.ai/deployment/helm)
+[Enterprise deployment guide →](http://localhost:9993/deployment/helm)
 
 ## Community & Support
 
 - **Discord**: [Join our community](https://discord.com/invite/d9ewZkWPTP) for help and discussions
-- **Documentation**: Comprehensive guides at [docs.bytebot.ai](https://docs.bytebot.ai)
+- **Documentation**: Comprehensive guides served at [http://localhost:9993](http://localhost:9993) when the stack is running (source in `docs/`)
 - **GitHub Issues**: Report bugs and request features
 
 ## Contributing
