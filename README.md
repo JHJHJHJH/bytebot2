@@ -103,6 +103,15 @@ docker-compose -f docker/docker-compose.yml up -d
 # Open http://localhost:9992 (docs at http://localhost:9993)
 ```
 
+Docker Compose protects the web UI by default with username `admin` and
+password `password`. To override them, add both values to `docker/.env` before
+starting the stack:
+
+```bash
+BYTEBOT_UI_ADMIN_USER=admin
+BYTEBOT_UI_ADMIN_PASSWORD=change-me
+```
+
 [Full deployment guide →](http://localhost:9993/quickstart)
 
 ## How It Works

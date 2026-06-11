@@ -31,6 +31,13 @@ spec:
                 name: bytebot-ui
                 port:
                   number: 9992
+          - path: /api/admin-auth
+            pathType: Prefix
+            backend:
+              service:
+                name: bytebot-ui
+                port:
+                  number: 9992
           - path: /api
             pathType: Prefix
             backend:

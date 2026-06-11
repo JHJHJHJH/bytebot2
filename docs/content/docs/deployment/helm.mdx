@@ -83,6 +83,35 @@ bytebot-agent:
       value: "your-key-here"
 ```
 
+### UI Admin Login (Optional)
+
+Set both `adminUser` and `adminPassword` to require a login before users can
+open the Bytebot web UI:
+
+```yaml
+bytebot-ui:
+  auth:
+    adminUser: "admin"
+    adminPassword: "change-me"
+```
+
+For production, keep the credentials in an existing Kubernetes Secret:
+
+```bash
+kubectl create secret generic bytebot-ui-auth \
+  --namespace bytebot \
+  --from-literal=admin-user="admin" \
+  --from-literal=admin-password="change-me"
+```
+
+```yaml
+bytebot-ui:
+  auth:
+    existingSecret: "bytebot-ui-auth"
+    usernameKey: "admin-user"
+    passwordKey: "admin-password"
+```
+
 ### Resource Limits (Optional)
 
 Adjust resources based on your needs:
@@ -256,22 +285,11 @@ kubectl delete namespace bytebot
   
   <Accordion title="Production Security">
     ```yaml
-    # Network policies
-    networkPolicy:
-      enabled: true
-    
-    # Pod security
-    podSecurityContext:
-      runAsNonRoot: true
-      runAsUser: 1000
-      fsGroup: 1000
-    
-    # Enable authentication
-    auth:
-      enabled: true
-      type: "basic"
-      username: "admin"
-      password: "changeme"  # Use secrets in production!
+    bytebot-ui:
+      auth:
+        existingSecret: "bytebot-ui-auth"
+        usernameKey: "admin-user"
+        passwordKey: "admin-password"
     ```
   </Accordion>
 </Accordions>

@@ -4,6 +4,13 @@ import { createProxyServer } from "http-proxy";
 import next from "next";
 import { createServer } from "http";
 import dotenv from "dotenv";
+import {
+  getAdminSessionCookie,
+  isAdminAuthEnabled,
+  isAdminAuthPublicPath,
+  sanitizeNextPath,
+  verifyAdminSessionToken,
+} from "./src/lib/adminAuth";
 
 // Load environment variables
 dotenv.config();
@@ -49,6 +56,43 @@ app
         target: `${targetUrl.protocol}//${targetUrl.host}`,
       });
     });
+
+    if (isAdminAuthEnabled()) {
+      const adminAuthGate: express.RequestHandler = (req, res, next) => {
+        const requestUrl = new URL(
+          req.originalUrl || req.url,
+          `http://${req.headers.host || hostname}`,
+        );
+
+        if (isAdminAuthPublicPath(requestUrl.pathname)) {
+          next();
+          return;
+        }
+
+        const sessionToken = getAdminSessionCookie(req.headers.cookie);
+
+        if (verifyAdminSessionToken(sessionToken)) {
+          next();
+          return;
+        }
+
+        if (req.method !== "GET" && req.method !== "HEAD") {
+          res.status(401).send("Authentication required");
+          return;
+        }
+
+        const nextPath = sanitizeNextPath(
+          `${requestUrl.pathname}${requestUrl.search}`,
+        );
+
+        res.redirect(
+          307,
+          `/admin/login?next=${encodeURIComponent(nextPath)}`,
+        );
+      };
+
+      expressApp.use(adminAuthGate);
+    }
 
     // Handle all other requests with Next.js
     expressApp.all("*", (req, res) => handle(req, res));

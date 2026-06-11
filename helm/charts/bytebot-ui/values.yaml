@@ -39,6 +39,13 @@ config:
   desktopBaseUrl: "http://bytebot-desktop:9990"
   desktopVncUrl: "http://bytebot-desktop:9990/websockify"
 
+auth:
+  adminUser: ""
+  adminPassword: ""
+  existingSecret: ""
+  usernameKey: "admin-user"
+  passwordKey: "admin-password"
+
 ingress:
   enabled: false
   className: ""
