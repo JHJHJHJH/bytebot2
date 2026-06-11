@@ -10,8 +10,8 @@ fullnameOverride: ""
 
 service:
   type: ClusterIP
-  port: 5432
-  targetPort: 5432
+  port: 5444
+  targetPort: 5444
   annotations: {}
 
 persistence:

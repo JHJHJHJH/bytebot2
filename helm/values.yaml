@@ -9,7 +9,7 @@ postgresql:
     password: postgres
     database: bytebotdb
   service:
-    port: 5432
+    port: 5444
   persistence:
     enabled: true
     size: 10Gi
@@ -47,7 +47,7 @@ bytebot-agent:
     enabled: false
   externalDatabase:
     host: "bytebot-postgresql"
-    port: 5432
+    port: 5444
     database: bytebotdb
     username: postgres
     password: postgres
