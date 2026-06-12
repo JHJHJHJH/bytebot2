@@ -1,0 +1,17 @@
+{
+  "title": "Documentation",
+  "pages": [
+    "index",
+    "quickstart",
+    "---User Guides---",
+    "...guides",
+    "---Deployment---",
+    "...deployment",
+    "---Core Concepts---",
+    "...core-concepts",
+    "---API Reference---",
+    "...api-reference",
+    "---REST API---",
+    "...rest-api"
+  ]
+}

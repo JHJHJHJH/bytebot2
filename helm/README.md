@@ -31,6 +31,28 @@ kubectl port-forward -n bytebot svc/bytebot-ui 9992:9992
 
 Access at: http://localhost:9992
 
+## Optional UI Admin Login
+
+Set both `bytebot-ui.auth.adminUser` and `bytebot-ui.auth.adminPassword`
+to require a login before users can open the Bytebot web UI:
+
+```yaml
+bytebot-ui:
+  auth:
+    adminUser: "admin"
+    adminPassword: "change-me"
+```
+
+For production, store these values in an existing Kubernetes Secret:
+
+```yaml
+bytebot-ui:
+  auth:
+    existingSecret: "bytebot-ui-auth"
+    usernameKey: "admin-user"
+    passwordKey: "admin-password"
+```
+
 ## Structure
 
 ```

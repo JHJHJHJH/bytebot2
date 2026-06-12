@@ -1,7 +1,10 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useTheme } from "next-themes";
+import { LogOut } from "lucide-react";
 
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
@@ -10,17 +13,55 @@ import {
   Home01Icon,
   ComputerIcon,
 } from "@hugeicons/core-free-icons";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+
+interface AuthStatusResponse {
+  enabled: boolean;
+  authenticated: boolean;
+}
 
 export function Header() {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [authStatus, setAuthStatus] = useState<AuthStatusResponse | null>(null);
   const pathname = usePathname();
+  const router = useRouter();
 
   // After mounting, we can safely show the theme-dependent content
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    let active = true;
+
+    fetch("/api/admin-auth/status")
+      .then((res) => res.json() as Promise<AuthStatusResponse>)
+      .then((status) => {
+        if (active) {
+          setAuthStatus(status);
+        }
+      })
+      .catch(() => {
+        if (active) {
+          setAuthStatus(null);
+        }
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  async function handleLogout() {
+    await fetch("/api/admin-auth/logout", {
+      method: "POST",
+    }).catch(() => null);
+
+    router.replace("/admin/login");
+    router.refresh();
+  }
 
   // Function to determine if a link is active
   const isActive = (path: string) => {
@@ -82,17 +123,24 @@ export function Header() {
             <span className="text-sm">Models</span>
           </Link>
           <Link
-            href="https://docs.bytebot.ai/quickstart"
+            href="http://localhost:9993/quickstart"
             target="_blank"
             rel="noopener noreferrer"
-            className={getLinkClasses("https://docs.bytebot.ai")}
+            className={getLinkClasses("http://localhost:9993")}
           >
             <HugeiconsIcon icon={DocumentCodeIcon} className="h-4 w-4" />
             <span className="text-sm">Docs</span>
           </Link>
         </div>
       </div>
-      <div className="flex items-center gap-3"></div>
+      <div className="flex items-center gap-3">
+        {authStatus?.enabled && authStatus.authenticated ? (
+          <Button variant="outline" size="sm" onClick={handleLogout}>
+            <LogOut className="h-4 w-4" />
+            Log out
+          </Button>
+        ) : null}
+      </div>
     </header>
   );
 }

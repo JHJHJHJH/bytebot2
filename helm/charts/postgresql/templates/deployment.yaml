@@ -19,6 +19,10 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        args:
+          - postgres
+          - -p
+          - {{ .Values.service.targetPort | quote }}
         ports:
         - name: postgresql
           containerPort: {{ .Values.service.targetPort }}
@@ -42,7 +46,7 @@ spec:
             command:
               - /bin/sh
               - -c
-              - exec pg_isready -U {{ .Values.auth.username | quote }} -h 127.0.0.1 -p 5432
+              - exec pg_isready -U {{ .Values.auth.username | quote }} -h 127.0.0.1 -p 5444
           initialDelaySeconds: 30
           periodSeconds: 10
         readinessProbe:
@@ -50,7 +54,7 @@ spec:
             command:
               - /bin/sh
               - -c
-              - exec pg_isready -U {{ .Values.auth.username | quote }} -h 127.0.0.1 -p 5432
+              - exec pg_isready -U {{ .Values.auth.username | quote }} -h 127.0.0.1 -p 5444
           initialDelaySeconds: 5
           periodSeconds: 5
         volumeMounts:
@@ -62,7 +66,7 @@ spec:
         imagePullPolicy: {{ .Values.metrics.image.pullPolicy }}
         env:
         - name: DATA_SOURCE_NAME
-          value: "postgresql://{{ .Values.auth.username }}:{{ .Values.auth.password }}@localhost:5432/{{ .Values.auth.database }}?sslmode=disable"
+          value: "postgresql://{{ .Values.auth.username }}:{{ .Values.auth.password }}@localhost:5444/{{ .Values.auth.database }}?sslmode=disable"
         ports:
         - name: metrics
           containerPort: {{ .Values.metrics.service.port }}

@@ -26,8 +26,9 @@ services:
     image: postgres:16-alpine
     container_name: bytebot-postgres
     restart: unless-stopped
+    command: -p 5444
     ports:
-      - "5432:5432"
+      - "5444:5444"
     environment:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_USER=postgres
@@ -48,7 +49,7 @@ services:
     ports:
       - "9991:9991"
     environment:
-      - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:postgres@postgres:5432/bytebotdb}
+      - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:postgres@postgres:5444/bytebotdb}
       - BYTEBOT_DESKTOP_BASE_URL=${BYTEBOT_DESKTOP_BASE_URL:-http://bytebot-desktop:9990}
       - BYTEBOT_AGENT_CONFIG_DIR=/data/bytebot-agent
       - BYTEBOT_LLM_PROXY_URL=${BYTEBOT_LLM_PROXY_URL:-http://bytebot-llm-proxy:4000}
@@ -91,6 +92,8 @@ services:
       - BYTEBOT_AGENT_BASE_URL=${BYTEBOT_AGENT_BASE_URL:-http://bytebot-agent:9991}
       - BYTEBOT_DESKTOP_BASE_URL=${BYTEBOT_DESKTOP_BASE_URL:-http://bytebot-desktop:9990}
       - BYTEBOT_DESKTOP_VNC_URL=${BYTEBOT_DESKTOP_VNC_URL:-http://bytebot-desktop:9990/websockify}
+      - BYTEBOT_UI_ADMIN_USER=${BYTEBOT_UI_ADMIN_USER:-admin}
+      - BYTEBOT_UI_ADMIN_PASSWORD=${BYTEBOT_UI_ADMIN_PASSWORD:-password}
     depends_on:
       - bytebot-agent
     networks:

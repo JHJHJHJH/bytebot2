@@ -26,8 +26,9 @@ services:
     image: postgres:16-alpine
     container_name: bytebot-postgres
     restart: unless-stopped
+    command: -p 5444
     ports:
-      - "5432:5432"
+      - "5444:5444"
     environment:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_USER=postgres
@@ -48,7 +49,7 @@ services:
     ports:
       - "9991:9991"
     environment:
-      - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:postgres@postgres:5432/bytebotdb}
+      - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:postgres@postgres:5444/bytebotdb}
       - BYTEBOT_DESKTOP_BASE_URL=${BYTEBOT_DESKTOP_BASE_URL:-http://bytebot-desktop:9990}
       - BYTEBOT_AGENT_CONFIG_DIR=/data/bytebot-agent
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
@@ -80,8 +81,24 @@ services:
       - BYTEBOT_AGENT_BASE_URL=${BYTEBOT_AGENT_BASE_URL:-http://bytebot-agent:9991}
       - BYTEBOT_DESKTOP_BASE_URL=${BYTEBOT_DESKTOP_BASE_URL:-http://bytebot-desktop:9990}
       - BYTEBOT_DESKTOP_VNC_URL=${BYTEBOT_DESKTOP_VNC_URL:-http://bytebot-desktop:9990/websockify}
+      - BYTEBOT_UI_ADMIN_USER=${BYTEBOT_UI_ADMIN_USER:-admin}
+      - BYTEBOT_UI_ADMIN_PASSWORD=${BYTEBOT_UI_ADMIN_PASSWORD:-password}
     depends_on:
       - bytebot-agent
+    networks:
+      - bytebot-network
+
+  bytebot-docs:
+    build:
+      context: ../docs
+      dockerfile: Dockerfile
+    image: bytebot-docs:edge
+    container_name: bytebot-docs
+    restart: unless-stopped
+    ports:
+      - "9993:9993"
+    environment:
+      - NODE_ENV=production
     networks:
       - bytebot-network
 
