@@ -1,7 +1,7 @@
 const DEFAULT_DEV_AGENT_BASE_URL = "http://localhost:9991";
 const DEFAULT_DEV_DESKTOP_BASE_URL = "http://localhost:9990";
 const DEFAULT_DEV_DESKTOP_VNC_URL = "ws://localhost:9990/websockify";
-const DEFAULT_DOCS_BASE_URL = "http://localhost:9993";
+const DEFAULT_DOCS_BASE_URL = "https://docs.bytebot.ai";
 
 function envValue(name: string): string | undefined {
   const value = process.env[name]?.trim();

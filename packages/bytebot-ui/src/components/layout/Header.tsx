@@ -25,7 +25,7 @@ interface UiConfigResponse {
   docsBaseUrl: string;
 }
 
-const DEFAULT_DOCS_BASE_URL = "http://localhost:9993";
+const DEFAULT_DOCS_BASE_URL = "https://docs.bytebot.ai";
 
 export function Header() {
   const { resolvedTheme } = useTheme();
@@ -34,7 +34,6 @@ export function Header() {
   const [docsBaseUrl, setDocsBaseUrl] = useState(DEFAULT_DOCS_BASE_URL);
   const pathname = usePathname();
   const router = useRouter();
-  const docsQuickstartUrl = `${docsBaseUrl}/quickstart`;
 
   // After mounting, we can safely show the theme-dependent content
   useEffect(() => {
@@ -148,7 +147,7 @@ export function Header() {
             <span className="text-sm">Models</span>
           </Link>
           <Link
-            href={docsQuickstartUrl}
+            href={docsBaseUrl}
             target="_blank"
             rel="noopener noreferrer"
             className={getLinkClasses(docsBaseUrl)}

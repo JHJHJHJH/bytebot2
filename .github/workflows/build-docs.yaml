@@ -15,6 +15,7 @@ permissions:
 jobs:
   docker:
     runs-on: ubuntu-22.04
+    timeout-minutes: 80
 
     steps:
       - uses: actions/checkout@v4
