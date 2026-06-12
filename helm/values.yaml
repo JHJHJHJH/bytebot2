@@ -43,6 +43,7 @@ bytebot-agent:
     port: 9991
   config:
     bytebotDesktopUrl: "http://bytebot-desktop:9990"
+    configDir: "/data/bytebot-agent"
   postgresql:
     enabled: false
   externalDatabase:
@@ -51,13 +52,14 @@ bytebot-agent:
     database: bytebotdb
     username: postgres
     password: postgres
-  # Legacy API key configuration (for backward compatibility)
+  # Optional legacy API key configuration. Leave these empty for normal
+  # deployments and add provider keys from the UI at /models.
   env:
     ANTHROPIC_API_KEY: ""
     OPENAI_API_KEY: ""
     GEMINI_API_KEY: ""
   
-  # New secret management structure - use this for better security
+  # Optional pre-seeded API key secrets for automated deployments.
   apiKeys:
     anthropic:
       useExisting: false
@@ -74,6 +76,12 @@ bytebot-agent:
       secretName: ""
       secretKey: "gemini-api-key"
       value: ""  # Only used if useExisting is false
+  persistence:
+    enabled: true
+    storageClass: ""
+    accessMode: ReadWriteOnce
+    size: 1Gi
+    annotations: {}
   resources:
     limits:
       memory: "2Gi"

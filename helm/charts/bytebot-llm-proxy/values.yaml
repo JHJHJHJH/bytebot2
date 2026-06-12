@@ -29,6 +29,8 @@ tolerations: []
 affinity: {}
 
 env:
+  # Optional LiteLLM proxy provider keys. Standard Bytebot deployments can
+  # leave these empty and add provider keys from the UI at /models.
   ANTHROPIC_API_KEY: ""
   OPENAI_API_KEY: ""
   GEMINI_API_KEY: ""

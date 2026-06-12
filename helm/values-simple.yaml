@@ -1,17 +1,10 @@
-# Simple Bytebot configuration example
-# Copy this file and add your API key(s)
+# Simple Bytebot configuration example.
+# LLM provider API keys are added after deployment from the UI at /models.
 
 bytebot-agent:
-  # Configure at least one API key
-  apiKeys:
-    anthropic:
-      value: "sk-ant-your-key-here"
-    
-    # Optional: Add more providers
-    # openai:
-    #   value: "sk-your-key-here"
-    # gemini:
-    #   value: "your-key-here"
+  # Keep /models API keys across pod restarts.
+  persistence:
+    enabled: true
 
 # That's it! The defaults handle everything else.
 # 

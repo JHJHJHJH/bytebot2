@@ -27,30 +27,11 @@ Helm provides a simple way to deploy Bytebot on Kubernetes clusters.
   
   <Step>
 
-  ### Configure API Keys
-    Create a `values.yaml` file with at least one API key:
-    
-    ```yaml
-    bytebot-agent:
-      apiKeys:
-        anthropic:
-          value: "sk-ant-your-key-here"
-        # Optional: Add more providers
-        # openai:
-        #   value: "sk-your-key-here"
-        # gemini:
-        #   value: "your-key-here"
-    ```
-  </Step>
-  
-  <Step>
-
   ### Install Bytebot
     ```bash
     helm install bytebot ./helm \
       --namespace bytebot \
-      --create-namespace \
-      -f values.yaml
+      --create-namespace
     ```
   </Step>
   
@@ -64,23 +45,27 @@ Helm provides a simple way to deploy Bytebot on Kubernetes clusters.
     # Access at http://localhost:9992
     ```
   </Step>
+
+  <Step>
+
+  ### Add Model Provider Keys
+    Open [http://localhost:9992/models](http://localhost:9992/models), add an Anthropic, OpenAI, or Gemini API key, and test the connection before creating your first task.
+  </Step>
 </Steps>
 
 ## Basic Configuration
 
-### API Keys
+### Model Provider Keys
 
-Configure at least one AI provider:
+LLM provider API keys are no longer required in Helm values or Kubernetes Secrets for normal deployments. Install Bytebot first, then register provider keys from the UI at `/models`.
+
+The chart mounts a persistent config volume for the agent by default so keys entered in `/models` survive pod restarts:
 
 ```yaml
 bytebot-agent:
-  apiKeys:
-    anthropic:
-      value: "sk-ant-your-key-here"
-    openai:
-      value: "sk-your-key-here"
-    gemini:
-      value: "your-key-here"
+  persistence:
+    enabled: true
+    size: "1Gi"
 ```
 
 ### UI Admin Login (Optional)
@@ -118,7 +103,7 @@ Adjust resources based on your needs:
 
 ```yaml
 # Desktop container (where automation runs)
-desktop:
+bytebot-desktop:
   resources:
     requests:
       memory: "2Gi"
@@ -128,7 +113,7 @@ desktop:
       cpu: "2"
 
 # Agent (AI orchestration)
-agent:
+bytebot-agent:
   resources:
     requests:
       memory: "1Gi"
@@ -140,11 +125,11 @@ agent:
 Enable ingress for domain-based access:
 
 ```yaml
-ui:
-  ingress:
+ingress:
+  enabled: true
+  host: bytebot.your-domain.com
+  tls:
     enabled: true
-    hostname: bytebot.your-domain.com
-    tls: true
 ```
 
 ## Accessing Bytebot
@@ -190,7 +175,7 @@ kubectl describe pod -n bytebot <pod-name>
 
 Common issues:
 - Insufficient memory/CPU: Check node resources with `kubectl top nodes`
-- Missing API keys: Verify your values.yaml configuration
+- No configured models: Open the UI at `/models`, add a provider key, and test it
 
 ### Connection Issues
 
@@ -229,8 +214,8 @@ kubectl delete namespace bytebot
 ## Advanced Configuration
 
 <Accordions type="multiple">
-  <Accordion title="Using External Secrets">
-    If using Kubernetes secret management (Vault, Sealed Secrets, etc.):
+  <Accordion title="Optional Pre-seeded Provider Keys">
+    For automated deployments, you can still pre-seed provider keys from Helm values or existing Kubernetes Secrets. This is optional; users can register keys from `/models` after deployment instead.
     
     ```yaml
     bytebot-agent:
@@ -250,7 +235,7 @@ kubectl delete namespace bytebot
   </Accordion>
   
   <Accordion title="LiteLLM Proxy Mode">
-    For centralized LLM management, use the included LiteLLM proxy:
+    For centralized LLM management, use the included LiteLLM proxy. Proxy provider credentials are configured on the proxy service, while standard Bytebot deployments can use `/models` instead:
     
     ```bash
     helm install bytebot ./helm \
@@ -270,10 +255,16 @@ kubectl delete namespace bytebot
     Configure persistent storage:
     
     ```yaml
-    desktop:
+    bytebot-desktop:
       persistence:
         enabled: true
         size: "20Gi"
+        storageClass: "fast-ssd"
+
+    bytebot-agent:
+      persistence:
+        enabled: true
+        size: "1Gi"
         storageClass: "fast-ssd"
     
     postgresql:

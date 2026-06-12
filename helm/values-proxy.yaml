@@ -7,7 +7,8 @@ bytebot-llm-proxy:
   enabled: true
   fullnameOverride: "bytebot-llm-proxy"
   env:
-    # Set your API keys here
+    # Optional LiteLLM proxy provider keys. Standard deployments can leave
+    # these empty and register provider keys from the Bytebot UI at /models.
     ANTHROPIC_API_KEY: ""
     OPENAI_API_KEY: ""
     GEMINI_API_KEY: ""
@@ -26,7 +27,7 @@ bytebot-llm-proxy:
 bytebot-agent:
   config:
     llmProxyUrl: "http://bytebot-llm-proxy:4000"
-  # Don't set API keys on the agent when using proxy
+  # Don't set provider keys on the agent when using proxy mode.
   env:
     ANTHROPIC_API_KEY: ""
     OPENAI_API_KEY: ""

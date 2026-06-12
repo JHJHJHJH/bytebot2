@@ -14,22 +14,14 @@ For complete deployment instructions, see:
 git clone https://github.com/bytebot-ai/bytebot.git
 cd bytebot
 
-# Create values.yaml with your API key(s)
-cat > values.yaml <<EOF
-bytebot-agent:
-  apiKeys:
-    anthropic:
-      value: "sk-ant-your-key-here"
-EOF
-
 # Install
-helm install bytebot ./helm --namespace bytebot --create-namespace -f values.yaml
+helm install bytebot ./helm --namespace bytebot --create-namespace
 
 # Access
 kubectl port-forward -n bytebot svc/bytebot-ui 9992:9992
 ```
 
-Access at: http://localhost:9992
+Access at: http://localhost:9992, then open `/models` to add and test an Anthropic, OpenAI, or Gemini API key. Keys registered in the UI are stored in the agent's persistent config volume.
 
 ## Optional UI Admin Login
 

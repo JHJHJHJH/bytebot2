@@ -6,6 +6,8 @@ description: "Use any LLM provider with Bytebot through LiteLLM proxy"
 
 LiteLLM acts as a unified proxy that lets you use 100+ LLM providers with Bytebot - including Azure OpenAI, AWS Bedrock, Anthropic, Hugging Face, Ollama, and more. This guide shows you how to set up LiteLLM with Bytebot.
 
+For the standard Anthropic, OpenAI, or Gemini setup, you do not need LiteLLM or provider keys in `.env`. Deploy Bytebot normally and register provider keys from the UI at `/models`.
+
 ## Why Use LiteLLM?
 
 <Cards>
@@ -38,9 +40,10 @@ Bytebot includes a pre-configured LiteLLM proxy service that makes it easy to us
     git clone https://github.com/bytebot-ai/bytebot.git
     cd bytebot
     
-    # Set up your API keys in docker/.env
+    # Optional: set provider keys for the LiteLLM proxy.
+    # Standard Bytebot deployments use /models instead.
     cat > docker/.env << EOF
-    # Add any combination of these keys
+    # Add any combination of these proxy keys
     ANTHROPIC_API_KEY=sk-ant-your-key-here
     OPENAI_API_KEY=sk-your-key-here  
     GEMINI_API_KEY=your-key-here
@@ -53,7 +56,7 @@ Bytebot includes a pre-configured LiteLLM proxy service that makes it easy to us
     This automatically:
     - Starts the `bytebot-llm-proxy` service on port 4000
     - Configures the agent to use the proxy via `BYTEBOT_LLM_PROXY_URL`
-    - Makes all configured models available through the proxy
+    - Makes proxy-configured models available through the proxy
   </Step>
   
   <Step>
@@ -127,7 +130,7 @@ graph LR
 1. **bytebot-llm-proxy Service**: A LiteLLM instance running in Docker that:
    - Runs on port 4000 within the Bytebot network
    - Uses the config from `packages/bytebot-llm-proxy/litellm-config.yaml`
-   - Inherits API keys from environment variables
+   - Inherits proxy provider keys from environment variables when proxy mode is used
 
 2. **Agent Integration**: The Bytebot agent:
    - Checks for `BYTEBOT_LLM_PROXY_URL` environment variable
@@ -366,12 +369,9 @@ config:
     master_key: ${LITELLM_MASTER_KEY}
 
 # Then in Bytebot values.yaml:
-agent:
-  openai:
-    enabled: true
-    apiKey: "${LITELLM_MASTER_KEY}"
-    baseUrl: "http://litellm:4000/v1"
-    model: "claude-3-5-sonnet"
+bytebot-agent:
+  config:
+    llmProxyUrl: "http://litellm:4000"
 ```
 
 ## Monitoring & Debugging

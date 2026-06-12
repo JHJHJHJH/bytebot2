@@ -85,7 +85,7 @@ Bytebot isn't limited to web interfaces. It can:
 **Option 1: Railway (Easiest)**
 [![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/bytebot?referralCode=L9lKXQ)
 
-Just click and add your AI provider API key.
+Just click to deploy, then add your AI provider API key from the Bytebot UI at `/models`.
 
 **Option 2: Docker Compose**
 
@@ -93,14 +93,10 @@ Just click and add your AI provider API key.
 git clone https://github.com/bytebot-ai/bytebot.git
 cd bytebot
 
-# Add your AI provider key (choose one)
-echo "ANTHROPIC_API_KEY=sk-ant-..." > docker/.env
-# Or: echo "OPENAI_API_KEY=sk-..." > docker/.env
-# Or: echo "GEMINI_API_KEY=..." > docker/.env
-
 docker-compose -f docker/docker-compose.yml up -d
 
-# Open http://localhost:9992 (docs at http://localhost:9993)
+# Open http://localhost:9992/models to add an AI provider key
+# Docs are served at http://localhost:9993
 ```
 
 Docker Compose protects the web UI by default with username `admin` and
@@ -215,7 +211,11 @@ curl -X POST http://localhost:9990/computer-use \
 
 Use one of the deployment methods above to get Bytebot running.
 
-### 2. Configure the Desktop
+### 2. Connect an AI Provider
+
+Open the Models page at `/models` in the web UI, add an Anthropic, OpenAI, or Gemini API key, and test the connection.
+
+### 3. Configure the Desktop
 
 Use the Desktop tab in the UI to:
 
@@ -224,7 +224,7 @@ Use the Desktop tab in the UI to:
 - Configure applications with your preferences
 - Log into websites you want Bytebot to access
 
-### 3. Start Giving Tasks
+### 4. Start Giving Tasks
 
 Create tasks in natural language and watch Bytebot complete them using the configured desktop.
 
@@ -265,7 +265,7 @@ Bytebot is built with:
 
 - **Data Privacy**: Everything runs on your infrastructure
 - **Full Control**: Customize the desktop environment as needed
-- **No Limits**: Use your own AI API keys without platform restrictions
+- **No Limits**: Register your own AI API keys in `/models` without platform restrictions
 - **Flexibility**: Install any software, access any systems
 
 ## Advanced Features
@@ -289,8 +289,9 @@ git clone https://github.com/bytebot-ai/bytebot.git
 cd bytebot
 
 # Install with Helm
-helm install bytebot ./helm \
-  --set agent.env.ANTHROPIC_API_KEY=sk-ant-...
+helm install bytebot ./helm
+
+# Open the UI and add an AI provider key at /models
 ```
 
 [Enterprise deployment guide →](http://localhost:9993/deployment/helm)

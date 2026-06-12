@@ -20,13 +20,13 @@ Bytebot can be deployed in several ways depending on your needs:
   </Step>
   <Step>
 
-  ### Add Anthropic Key
-    Enter either your `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, or `GEMINI_API_KEY` for the bytebot-agent resource.
+  ### Deploy the Template
+    Keep the default service settings and start the deployment.
   </Step>
   <Step>
 
-  ### Deploy &amp; Launch
-    Hit **Deploy**. Railway will build the stack, wire the services together via private networking and output a public URL for the UI. Your agent should be ready within a couple of minutes!
+  ### Launch &amp; Add a Model Key
+    Hit **Deploy**. Railway will build the stack, wire the services together via private networking and output a public URL for the UI. Open the UI, go to `/models`, and add an Anthropic, OpenAI, or Gemini API key before creating your first task.
   </Step>
 </Steps>
 
@@ -43,7 +43,7 @@ Bytebot can be deployed in several ways depending on your needs:
 - Docker ≥ 20.10
 - Docker Compose
 - 4GB+ RAM available
-- AI API key from one of these providers:
+- An AI API key from one of these providers to register in `/models` after deployment:
   - Anthropic ([get one here](https://console.anthropic.com)) - Claude models
   - OpenAI ([get one here](https://platform.openai.com/api-keys)) - GPT models
   - Google ([get one here](https://makersuite.google.com/app/apikey)) - Gemini models
@@ -59,11 +59,6 @@ Get your self-hosted AI desktop agent running with just three commands:
     ```bash 
     git clone https://github.com/bytebot-ai/bytebot.git
     cd bytebot
-    
-    # Configure your AI provider (choose one):
-    echo "ANTHROPIC_API_KEY=your_api_key_here" > docker/.env    # For Claude
-    # echo "OPENAI_API_KEY=your_api_key_here" > docker/.env     # For OpenAI
-    # echo "GEMINI_API_KEY=your_api_key_here" > docker/.env     # For Gemini
     ```
   </Step>
 
@@ -86,7 +81,7 @@ This starts all four services:
 <Step>
 
 ### Open the Chat Interface
-Navigate to [http://localhost:9992](http://localhost:9992) to access the Bytebot UI.
+Navigate to [http://localhost:9992](http://localhost:9992) to access the Bytebot UI. Open [http://localhost:9992/models](http://localhost:9992/models), add your Anthropic, OpenAI, or Gemini API key, and test the connection.
 
 **Two ways to interact:**
 1. **Tasks**: Enter task descriptions to have Bytebot work autonomously
@@ -182,6 +177,7 @@ Now let's see Bytebot in action! Try these example tasks:
 | Service          | URL                                                                      | Purpose                                       |
 | ---------------- | ------------------------------------------------------------------------ | --------------------------------------------- |
 | **Tasks UI**     | [http://localhost:9992](http://localhost:9992)                           | Main interface for interacting with the agent |
+| **Models UI**    | [http://localhost:9992/models](http://localhost:9992/models)             | Add and test LLM provider API keys            |
 | **Agent API**    | [http://localhost:9991/tasks](http://localhost:9991/tasks)               | REST API for programmatic task creation       |
 | **Desktop API** | [http://localhost:9990/computer-use](http://localhost:9990/computer-use) | Low-level desktop control API                 |
 | **MCP SSE**      | [http://localhost:9990/mcp](http://localhost:9990/mcp)                 | Connect MCP clients for tool access           |
@@ -299,12 +295,11 @@ curl -X POST http://localhost:9990/computer-use \
     All services should show as "Up".
   </Accordion>
   <Accordion title="Agent errors or no response">
-    Check your API key is set correctly: 
+    Check that a model provider key is configured:
     ```bash 
-    cat docker/.env
     docker-compose -f docker/docker-compose.yml logs bytebot-agent 
     ```
-    Ensure you're using a valid API key from Anthropic, OpenAI, or Google.
+    Open [http://localhost:9992/models](http://localhost:9992/models), add or test a valid API key from Anthropic, OpenAI, or Google, and ensure your provider account has available credits or quota.
   </Accordion>
 </Accordions>
 
@@ -334,17 +329,7 @@ curl -X POST http://localhost:9990/computer-use \
 
 <Accordions type="multiple">
   <Accordion title="AI Provider Settings">
-    ```bash
-    # Choose one AI provider:
-    ANTHROPIC_API_KEY=sk-ant-...    # For Claude models
-    OPENAI_API_KEY=sk-...           # For GPT models  
-    GEMINI_API_KEY=...              # For Gemini models
-    
-    # Optional: Use specific models
-    ANTHROPIC_MODEL=claude-3-5-sonnet-20241022  # Default
-    OPENAI_MODEL=gpt-4o
-    GEMINI_MODEL=gemini-1.5-flash
-    ```
+    LLM provider API keys are configured from the Bytebot UI at `/models`, not in `docker/.env`. The Docker Compose deployment persists those keys in the `bytebot_agent_config` volume so they survive container restarts.
   </Accordion>
   <Accordion title="Port Configuration">
     ```bash

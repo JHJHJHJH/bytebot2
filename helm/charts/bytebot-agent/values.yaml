@@ -32,12 +32,14 @@ env:
   DATABASE_URL: ""
   BYTEBOT_DESKTOP_BASE_URL: "http://bytebot-desktop:9990"
   BYTEBOT_LLM_PROXY_URL: ""
-  # Legacy API key values for backward compatibility
+  # Optional legacy API key values for backward compatibility. Normal
+  # deployments can leave these empty and add provider keys in the UI at /models.
   ANTHROPIC_API_KEY: ""
   OPENAI_API_KEY: ""
   GEMINI_API_KEY: ""
 
-# New secret management structure
+# Optional pre-seeded API key secrets for automated deployments. Not required
+# when users register provider keys in the UI at /models.
 apiKeys:
   anthropic:
     useExisting: false
@@ -59,6 +61,14 @@ config:
   databaseUrl: "postgresql://postgres:postgres@bytebot-postgresql:5444/bytebotdb"
   bytebotDesktopUrl: "http://bytebot-desktop:9990"
   llmProxyUrl: ""
+  configDir: "/data/bytebot-agent"
+
+persistence:
+  enabled: true
+  storageClass: ""
+  accessMode: ReadWriteOnce
+  size: 1Gi
+  annotations: {}
 
 ingress:
   enabled: false

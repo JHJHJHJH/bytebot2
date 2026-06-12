@@ -52,9 +52,6 @@ services:
       - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:postgres@postgres:5444/bytebotdb}
       - BYTEBOT_DESKTOP_BASE_URL=${BYTEBOT_DESKTOP_BASE_URL:-http://bytebot-desktop:9990}
       - BYTEBOT_AGENT_CONFIG_DIR=/data/bytebot-agent
-      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - GEMINI_API_KEY=${GEMINI_API_KEY}
     volumes:
       - bytebot_agent_config:/data/bytebot-agent
     depends_on:

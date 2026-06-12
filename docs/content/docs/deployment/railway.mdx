@@ -3,7 +3,7 @@ title: "Deploying Bytebot on Railway"
 description: "Comprehensive guide to deploying the full Bytebot stack on Railway using the official 1-click template"
 ---
 
-> **TL;DR –** Click the button below, add your AI API key (Anthropic, OpenAI, or Google), and your personal Bytebot instance will be live in ~2 minutes.
+> **TL;DR -** Click the button below, deploy with the defaults, then add your AI provider API key from the Bytebot UI at `/models`. Your personal Bytebot instance will be live in ~2 minutes.
 
 [![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/bytebot?referralCode=L9lKXQ)
 
@@ -39,12 +39,7 @@ All internal traffic flows through Railway’s [private networking](https://docs
   <Step>
 
   ### 2. Configure Environment
-    For the bytebot-agent resource, add your AI API key (choose at least one):
-    - **Anthropic**: Paste into `ANTHROPIC_API_KEY` for Claude models
-    - **OpenAI**: Paste into `OPENAI_API_KEY` for GPT models
-    - **Google**: Paste into `GEMINI_API_KEY` for Gemini models
-    
-    Keep other defaults as is.
+    Keep the default service variables as is. LLM provider API keys are configured after deployment from the Bytebot UI, not as Railway environment variables.
   </Step>
   <Step>
 
@@ -54,8 +49,13 @@ All internal traffic flows through Railway’s [private networking](https://docs
   <Step>
 
   ### 4. Launch Bytebot
-    When the build logs show *"bytebot-ui: ready"*, click the generated URL (e.g. `https://bytebot-ui-prod.up.railway.app`). You should see the task interface. Create a task and watch the desktop stream!  
+    When the build logs show *"bytebot-ui: ready"*, click the generated URL (e.g. `https://bytebot-ui-prod.up.railway.app`). You should see the task interface.
     _Tip: You can tail logs for each service from the Railway dashboard._
+  </Step>
+  <Step>
+
+  ### 5. Add a Model Provider
+    Open the generated UI URL, go to `/models`, add an Anthropic, OpenAI, or Gemini API key, and test the connection before creating your first task.
   </Step>
 </Steps>
 
@@ -86,7 +86,7 @@ All internal traffic flows through Railway’s [private networking](https://docs
 | Symptom | Likely Cause | Fix |
 | ------- | ------------ | ---- |
 | Web UI shows “connecting…” | Desktop not ready or private networking mis-config | Wait for `bytebot-desktop` container to finish starting, or restart service |
-| Agent errors `401` or `403` | Missing/invalid API key | Re-enter your AI provider's API key in Railway variables |
+| No models available or provider returns `401`/`403` | Missing/invalid API key | Add or test your provider key from the Bytebot UI at `/models` |
 | Slow desktop video | Free Railway plan throttling | Upgrade plan or reduce screen resolution in desktop settings |
 
 ---
