@@ -1,10 +1,11 @@
 import { NextRequest } from "next/server";
+import { getAgentBaseUrl } from "../../../lib/backendUrls";
 
 /* -------------------------------------------------------------------- */
 /* generic proxy helper                                                 */
 /* -------------------------------------------------------------------- */
 async function proxy(req: NextRequest, path: string[]): Promise<Response> {
-  const BASE_URL = process.env.BYTEBOT_AGENT_BASE_URL!;
+  const BASE_URL = getAgentBaseUrl();
   const subPath = path.length ? path.join("/") : "";
   const url = `${BASE_URL}/${subPath}${req.nextUrl.search}`;
 

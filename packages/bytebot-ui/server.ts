@@ -11,6 +11,7 @@ import {
   sanitizeNextPath,
   verifyAdminSessionToken,
 } from "./src/lib/adminAuth";
+import { getAgentBaseUrl, getDesktopVncUrl } from "./src/lib/backendUrls";
 
 // Load environment variables
 dotenv.config();
@@ -20,8 +21,8 @@ const hostname = process.env.HOSTNAME || "localhost";
 const port = parseInt(process.env.PORT || "9992", 10);
 
 // Backend URLs
-const BYTEBOT_AGENT_BASE_URL = process.env.BYTEBOT_AGENT_BASE_URL;
-const BYTEBOT_DESKTOP_VNC_URL = process.env.BYTEBOT_DESKTOP_VNC_URL;
+const BYTEBOT_AGENT_BASE_URL = getAgentBaseUrl();
+const BYTEBOT_DESKTOP_VNC_URL = getDesktopVncUrl();
 
 const app = next({ dev, hostname, port });
 

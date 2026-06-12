@@ -81,6 +81,7 @@ services:
         - BYTEBOT_AGENT_BASE_URL=${BYTEBOT_AGENT_BASE_URL:-http://bytebot-agent:9991}
         - BYTEBOT_DESKTOP_BASE_URL=${BYTEBOT_DESKTOP_BASE_URL:-http://bytebot-desktop:9990}
         - BYTEBOT_DESKTOP_VNC_URL=${BYTEBOT_DESKTOP_VNC_URL:-http://bytebot-desktop:9990/websockify}
+        - BYTEBOT_DOCS_BASE_URL=${BYTEBOT_DOCS_BASE_URL:-http://localhost:9993}
     # Use pre-built image
     image: ghcr.io/jhjhjhjh/bytebot-ui:edge
     container_name: bytebot-ui
@@ -92,6 +93,7 @@ services:
       - BYTEBOT_AGENT_BASE_URL=${BYTEBOT_AGENT_BASE_URL:-http://bytebot-agent:9991}
       - BYTEBOT_DESKTOP_BASE_URL=${BYTEBOT_DESKTOP_BASE_URL:-http://bytebot-desktop:9990}
       - BYTEBOT_DESKTOP_VNC_URL=${BYTEBOT_DESKTOP_VNC_URL:-http://bytebot-desktop:9990/websockify}
+      - BYTEBOT_DOCS_BASE_URL=${BYTEBOT_DOCS_BASE_URL:-http://localhost:9993}
       - BYTEBOT_UI_ADMIN_USER=${BYTEBOT_UI_ADMIN_USER:-admin}
       - BYTEBOT_UI_ADMIN_PASSWORD=${BYTEBOT_UI_ADMIN_PASSWORD:-password}
     depends_on:

@@ -33,11 +33,13 @@ env:
   BYTEBOT_AGENT_BASE_URL: "http://bytebot-agent:9991"
   BYTEBOT_DESKTOP_BASE_URL: "http://bytebot-desktop:9990"
   BYTEBOT_DESKTOP_VNC_URL: "http://bytebot-desktop:9990/websockify"
+  BYTEBOT_DOCS_BASE_URL: "http://localhost:9993"
 
 config:
   agentBaseUrl: "http://bytebot-agent:9991"
   desktopBaseUrl: "http://bytebot-desktop:9990"
   desktopVncUrl: "http://bytebot-desktop:9990/websockify"
+  docsBaseUrl: "http://localhost:9993"
 
 auth:
   adminUser: ""

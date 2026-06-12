@@ -21,12 +21,20 @@ interface AuthStatusResponse {
   authenticated: boolean;
 }
 
+interface UiConfigResponse {
+  docsBaseUrl: string;
+}
+
+const DEFAULT_DOCS_BASE_URL = "http://localhost:9993";
+
 export function Header() {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [authStatus, setAuthStatus] = useState<AuthStatusResponse | null>(null);
+  const [docsBaseUrl, setDocsBaseUrl] = useState(DEFAULT_DOCS_BASE_URL);
   const pathname = usePathname();
   const router = useRouter();
+  const docsQuickstartUrl = `${docsBaseUrl}/quickstart`;
 
   // After mounting, we can safely show the theme-dependent content
   useEffect(() => {
@@ -48,6 +56,23 @@ export function Header() {
           setAuthStatus(null);
         }
       });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+
+    fetch("/api/ui-config")
+      .then((res) => res.json() as Promise<UiConfigResponse>)
+      .then((config) => {
+        if (active) {
+          setDocsBaseUrl(config.docsBaseUrl);
+        }
+      })
+      .catch(() => null);
 
     return () => {
       active = false;
@@ -123,10 +148,10 @@ export function Header() {
             <span className="text-sm">Models</span>
           </Link>
           <Link
-            href="http://localhost:9993/quickstart"
+            href={docsQuickstartUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className={getLinkClasses("http://localhost:9993")}
+            className={getLinkClasses(docsBaseUrl)}
           >
             <HugeiconsIcon icon={DocumentCodeIcon} className="h-4 w-4" />
             <span className="text-sm">Docs</span>
