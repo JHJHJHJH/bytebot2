@@ -7,7 +7,7 @@ services:
       context: ../packages/
       dockerfile: bytebotd/Dockerfile
     # Use pre-built image
-    image: ghcr.io/bytebot-ai/bytebot-desktop:edge
+    image: ghcr.io/jhjhjhjh/bytebot-desktop:edge
     shm_size: "2g"
     container_name: bytebot-desktop
     restart: unless-stopped

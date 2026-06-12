@@ -1,5 +1,5 @@
 # Extend the pre-built bytebot-desktop image
-FROM ghcr.io/bytebot-ai/bytebot-desktop:edge
+FROM ghcr.io/jhjhjhjh/bytebot-desktop:edge
 
 # Add additional packages, applications, or customizations here
 

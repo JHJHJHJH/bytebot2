@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: ghcr.io/bytebot-ai/bytebot-desktop
+  repository: ghcr.io/jhjhjhjh/bytebot-desktop
   tag: edge
   pullPolicy: IfNotPresent
 

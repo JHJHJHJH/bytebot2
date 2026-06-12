@@ -7,7 +7,7 @@ services:
       context: ../packages/
       dockerfile: bytebotd/Dockerfile
     # Use pre-built image
-    image: ghcr.io/bytebot-ai/bytebot-desktop:edge
+    image: ghcr.io/jhjhjhjh/bytebot-desktop:edge
     shm_size: "2g"
     container_name: bytebot-desktop
     restart: unless-stopped
@@ -43,7 +43,7 @@ services:
       context: ../packages/
       dockerfile: bytebot-agent/Dockerfile
     # Use pre-built image
-    image: ghcr.io/bytebot-ai/bytebot-agent:edge
+    image: ghcr.io/jhjhjhjh/bytebot-agent:edge
     container_name: bytebot-agent
     restart: unless-stopped
     ports:
@@ -82,7 +82,7 @@ services:
         - BYTEBOT_DESKTOP_BASE_URL=${BYTEBOT_DESKTOP_BASE_URL:-http://bytebot-desktop:9990}
         - BYTEBOT_DESKTOP_VNC_URL=${BYTEBOT_DESKTOP_VNC_URL:-http://bytebot-desktop:9990/websockify}
     # Use pre-built image
-    image: ghcr.io/bytebot-ai/bytebot-ui:edge
+    image: ghcr.io/jhjhjhjh/bytebot-ui:edge
     container_name: bytebot-ui
     restart: unless-stopped
     ports:

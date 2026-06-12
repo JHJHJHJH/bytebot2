@@ -19,9 +19,9 @@ Railway provides a zero-ops PaaS experience with private networking and per-serv
 
 | Service          | Container Image (edge)                                               | Port | Exposed? | Purpose                              |
 | ---------------- | -------------------------------------------------------------------- | ---- | -------- | ------------------------------------ |
-| **bytebot-ui**   | `ghcr.io/bytebot-ai/bytebot-ui:edge`                                 | 9992 | **Yes**  | Next.js web UI rendered to the world |
-| **bytebot-agent**| `ghcr.io/bytebot-ai/bytebot-agent:edge`                              | 9991 | No       | Task orchestration & LLM calls       |
-| **bytebot-desktop**| `ghcr.io/bytebot-ai/bytebot-desktop:edge`                          | 9990 | No       | Containerised Ubuntu + XFCE desktop  |
+| **bytebot-ui**   | `ghcr.io/jhjhjhjh/bytebot-ui:edge`                                 | 9992 | **Yes**  | Next.js web UI rendered to the world |
+| **bytebot-agent**| `ghcr.io/jhjhjhjh/bytebot-agent:edge`                              | 9991 | No       | Task orchestration & LLM calls       |
+| **bytebot-desktop**| `ghcr.io/jhjhjhjh/bytebot-desktop:edge`                          | 9990 | No       | Containerised Ubuntu + XFCE desktop  |
 | **postgres**     | `postgres:14-alpine`                                                 | 5432 | No       | Persistence layer                    |
 
 All internal traffic flows through Railway’s [private networking](https://docs.railway.com/guides/private-networking). Only `bytebot-ui` is assigned a public domain.

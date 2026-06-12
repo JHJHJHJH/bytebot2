@@ -17,7 +17,7 @@ postgresql:
 bytebot-desktop:
   fullnameOverride: "bytebot-desktop"
   image:
-    repository: ghcr.io/bytebot-ai/bytebot-desktop
+    repository: ghcr.io/jhjhjhjh/bytebot-desktop
     tag: edge
   service:
     type: ClusterIP
@@ -36,7 +36,7 @@ bytebot-desktop:
 bytebot-agent:
   fullnameOverride: "bytebot-agent"
   image:
-    repository: ghcr.io/bytebot-ai/bytebot-agent
+    repository: ghcr.io/jhjhjhjh/bytebot-agent
     tag: edge
   service:
     type: ClusterIP
@@ -85,7 +85,7 @@ bytebot-agent:
 bytebot-ui:
   fullnameOverride: "bytebot-ui"
   image:
-    repository: ghcr.io/bytebot-ai/bytebot-ui
+    repository: ghcr.io/jhjhjhjh/bytebot-ui
     tag: edge
   service:
     type: ClusterIP
