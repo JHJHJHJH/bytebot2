@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/images/bytebot-logo.png" width="500" alt="Bytebot Logo">
+<img src="docs/public/images/bytebot-logo.png" width="500" alt="Bytebot Logo">
 
 # Bytebot: Open-Source AI Desktop Agent
 
@@ -8,13 +8,12 @@
 
 **An AI that has its own computer to complete tasks for you**
 
-[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/bytebot?referralCode=L9lKXQ)
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/bytebot-jun-26-codex-login-gate-extensio?referralCode=SEF788)
 
 [![Docker](https://img.shields.io/badge/docker-ready-blue.svg)](https://github.com/bytebot-ai/bytebot/tree/main/docker)
 [![License](https://img.shields.io/badge/license-Apache%202.0-green.svg)](LICENSE)
-[![Discord](https://img.shields.io/discord/1232768900274585720?color=7289da&label=discord)](https://discord.com/invite/d9ewZkWPTP)
 
-[🌐 Website](https://bytebot.ai) • [📚 Documentation](http://localhost:9993) (self-hosted with the stack) • [💬 Discord](https://discord.com/invite/d9ewZkWPTP) • [𝕏 Twitter](https://x.com/bytebot_ai)
+[🌐 Website](https://bytebot.ai) • [📚 Documentation](https://docs.bytebot.ai/introduction) (self-hosted with the stack) • [𝕏 Twitter](https://x.com/bytebot_ai)
 
 <!-- Keep these links. Translations will automatically update with the README. -->
 [Deutsch](https://zdoc.app/de/bytebot-ai/bytebot) | 
@@ -83,20 +82,20 @@ Bytebot isn't limited to web interfaces. It can:
 ### Deploy in 2 Minutes
 
 **Option 1: Railway (Easiest)**
-[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/bytebot?referralCode=L9lKXQ)
+
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/bytebot-jun-26-codex-login-gate-extensio?referralCode=SEF788)
 
 Just click to deploy, then add your AI provider API key from the Bytebot UI at `/models`.
 
 **Option 2: Docker Compose**
 
 ```bash
-git clone https://github.com/bytebot-ai/bytebot.git
-cd bytebot
+git clone https://github.com/JHJHJHJH/bytebot-han.git
+cd bytebot-han
 
 docker-compose -f docker/docker-compose.yml up -d
 
 # Open http://localhost:9992/models to add an AI provider key
-# Docs are served at http://localhost:9993
 ```
 
 Docker Compose protects the web UI by default with username `admin` and
@@ -107,23 +106,6 @@ starting the stack:
 BYTEBOT_UI_ADMIN_USER=admin
 BYTEBOT_UI_ADMIN_PASSWORD=change-me
 ```
-
-### Update Docker Images
-
-Maintainers can manually rebuild and publish the `edge` Docker images with the
-GitHub CLI:
-
-```bash
-gh workflow run build-desktop.yaml --repo JHJHJHJH/bytebot-han --ref main
-gh workflow run build-agent.yaml --repo JHJHJHJH/bytebot-han --ref main
-gh workflow run build-ui.yaml --repo JHJHJHJH/bytebot-han --ref main
-gh workflow run build-docs.yaml --repo JHJHJHJH/bytebot-han --ref main
-```
-
-These commands require the workflow files to be committed to the repository's
-default branch before GitHub can dispatch them.
-
-[Full deployment guide →](http://localhost:9993/quickstart)
 
 ## How It Works
 
@@ -268,56 +250,6 @@ Bytebot is built with:
 - **No Limits**: Register your own AI API keys in `/models` without platform restrictions
 - **Flexibility**: Install any software, access any systems
 
-## Advanced Features
-
-### Multiple AI Providers
-
-Use any AI provider through our [LiteLLM integration](http://localhost:9993/deployment/litellm):
-
-- Azure OpenAI
-- AWS Bedrock
-- Local models via Ollama
-- 100+ other providers
-
-### Enterprise Deployment
-
-Deploy on Kubernetes with Helm:
-
-```bash
-# Clone the repository
-git clone https://github.com/bytebot-ai/bytebot.git
-cd bytebot
-
-# Install with Helm
-helm install bytebot ./helm
-
-# Open the UI and add an AI provider key at /models
-```
-
-[Enterprise deployment guide →](http://localhost:9993/deployment/helm)
-
-## Community & Support
-
-- **Discord**: [Join our community](https://discord.com/invite/d9ewZkWPTP) for help and discussions
-- **Documentation**: Comprehensive guides served at [http://localhost:9993](http://localhost:9993) when the stack is running (source in `docs/`)
-- **GitHub Issues**: Report bugs and request features
-
-## Contributing
-
-We welcome contributions! Whether it's:
-
-- 🐛 Bug fixes
-- ✨ New features
-- 📚 Documentation improvements
-- 🌐 Translations
-
-Please:
-
-1. Check existing [issues](https://github.com/bytebot-ai/bytebot/issues) first
-2. Open an issue to discuss major changes
-3. Submit PRs with clear descriptions
-4. Join our [Discord](https://discord.com/invite/d9ewZkWPTP) to discuss ideas
-
 ## License
 
 Bytebot is open source under the Apache 2.0 license.
@@ -328,7 +260,7 @@ Bytebot is open source under the Apache 2.0 license.
 
 **Give your AI its own computer. See what it can do.**
 
-[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/bytebot?referralCode=L9lKXQ)
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/bytebot-jun-26-codex-login-gate-extensio?referralCode=SEF788)
 
 <sub>Built by [Tantl Labs](https://tantl.com) and the open source community</sub>
 
